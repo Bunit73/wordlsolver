@@ -52,12 +52,14 @@ function IncludedLetter(props: {
         <Form.Field>
             <Form.Control>
                 <Form.Checkbox
-                    checked={false}
+                    checked={props.includedLetter.correctPos}
                     onChange={(e) => {
-                        // return setTocAgreed(e.target.checked);
+                        const il = props.includedLetter;
+                        il.correctPos = e.target.checked;
+                        props.onChange(il);
                     }}
                 >
-                    Position is known
+                    Correct Position
                 </Form.Checkbox>
             </Form.Control>
         </Form.Field>

@@ -1,8 +1,5 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {Container, Content, Heading, Hero, Section} from "react-bulma-components";
-// @ts-ignore
-import raw from './filtered_words.txt';
-import {IIncludedLetter} from "./Models/Models";
 
 function PossibleWords(props: {
     words: string[]

@@ -1,7 +1,7 @@
 interface IIncludedLetter {
     letter: string,
-    posKnown: boolean,
-    pos?: number
+    correctPos: boolean,
+    pos: number
 }
 
 export type {IIncludedLetter}

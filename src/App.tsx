@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import 'bulma/css/bulma.min.css';
 import './App.css';
-import {Columns, Container} from "react-bulma-components";
+import {Box, Button, Columns, Container} from "react-bulma-components";
 import {PossibleWords} from './PossibleWords';
 import {IIncludedLetter} from "./Models/Models";
 import {ExcludedLetters} from "./ExcludedLetters";
@@ -10,36 +10,39 @@ import {IncludedLetters} from "./IncludedLetter";
 import raw from "./filtered_words.txt";
 
 function App() {
-    let [words, setWords] = useState<string[]>([])
-    let [filteredWords, setFilteredWords] = useState<string[]>([])
-    let [excludedLetters, setExcludedLetters] = useState<string[]>([])
-    let [includedLetters, setIncludedLetters] = useState<IIncludedLetter[]>([
+    const initIncludeLetters = [
         {
             letter: '',
-            posKnown: false,
+            correctPos: false,
             pos: 0
         },
         {
             letter: '',
-            posKnown: false,
+            correctPos: false,
             pos: 1
         },
         {
             letter: '',
-            posKnown: false,
+            correctPos: false,
             pos: 2
         },
         {
             letter: '',
-            posKnown: false,
+            correctPos: false,
             pos: 3
         },
         {
             letter: '',
-            posKnown: false,
+            correctPos: false,
             pos: 4
         }
-    ])
+    ]
+
+    let [words, setWords] = useState<string[]>([])
+    let [filteredWords, setFilteredWords] = useState<string[]>([])
+    let [excludedLetters, setExcludedLetters] = useState<string[]>([])
+    let [includedLetters, setIncludedLetters] = useState<IIncludedLetter[]>(initIncludeLetters)
+
 
     useEffect(() => {
         let wl: string[] = [];
@@ -73,11 +76,26 @@ function App() {
     const WordContainsLetters = (word: string, letters: IIncludedLetter[]): boolean => {
         const lList = letters.filter(x => x.letter.length > 0)
         let retval = false;
+        let hasLetter = false;
         if (lList.length === 0) {
             return true;
         } else {
             for (const l of lList) {
-                retval = word.includes(l.letter);
+                hasLetter = word.includes(l.letter);
+                // doesnt include letter
+                if(!hasLetter) {
+                    return false;
+                }
+                // position is incorrect
+                else if(!l.correctPos && word[l.pos] === l.letter){
+                    return false;
+                }
+                // position is correct
+                else if(l.correctPos && word[l.pos] !== l.letter){
+                    return false;
+                } else {
+                    retval = true;
+                }
             }
 
             return retval;
