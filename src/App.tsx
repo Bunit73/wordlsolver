@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import 'bulma/css/bulma.min.css';
 import './App.css';
-import {Box, Button, Columns, Container} from "react-bulma-components";
+import {Columns, Container, Heading, Section} from "react-bulma-components";
 import {PossibleWords} from './PossibleWords';
 import {IIncludedLetter} from "./Models/Models";
 import {ExcludedLetters} from "./ExcludedLetters";
@@ -83,15 +83,15 @@ function App() {
             for (const l of lList) {
                 hasLetter = word.includes(l.letter);
                 // doesnt include letter
-                if(!hasLetter) {
+                if (!hasLetter) {
                     return false;
                 }
                 // position is incorrect
-                else if(!l.correctPos && word[l.pos] === l.letter){
+                else if (!l.correctPos && word[l.pos] === l.letter) {
                     return false;
                 }
                 // position is correct
-                else if(l.correctPos && word[l.pos] !== l.letter){
+                else if (l.correctPos && word[l.pos] !== l.letter) {
                     return false;
                 } else {
                     retval = true;
@@ -119,31 +119,38 @@ function App() {
 
     return (
         <div className="App">
-            <Container>
-                <Columns>
-                    <Columns.Column>
-                        <PossibleWords
-                            words={filteredWords}
-                        />
-                    </Columns.Column>
-                    <Columns.Column>
-                        <IncludedLetters
-                            includedLetters={includedLetters}
-                            onChange={(val) => {
-                                setIncludedLetters(val)
-                                setFilteredWords(WordFilter(words,excludedLetters, val))
-                            }}/>
-                        <ExcludedLetters
-                            excludedLetters={excludedLetters}
-                            onChange={(val) => {
-                                const eL = Array.from(new Set(val));
-                                setExcludedLetters(eL)
-                                setFilteredWords(WordFilter(words,eL, includedLetters))
-                            }}
-                        />
-                    </Columns.Column>
-                </Columns>
-            </Container>
+            <Section>
+                <Heading>
+                    Solver for Wordle
+                </Heading>
+            </Section>
+            <Section>
+                <Container>
+                    <Columns>
+                        <Columns.Column>
+                            <PossibleWords
+                                words={filteredWords}
+                            />
+                        </Columns.Column>
+                        <Columns.Column>
+                            <IncludedLetters
+                                includedLetters={includedLetters}
+                                onChange={(val) => {
+                                    setIncludedLetters(val)
+                                    setFilteredWords(WordFilter(words, excludedLetters, val))
+                                }}/>
+                            <ExcludedLetters
+                                excludedLetters={excludedLetters}
+                                onChange={(val) => {
+                                    const eL = Array.from(new Set(val));
+                                    setExcludedLetters(eL)
+                                    setFilteredWords(WordFilter(words, eL, includedLetters))
+                                }}
+                            />
+                        </Columns.Column>
+                    </Columns>
+                </Container>
+            </Section>
         </div>
     );
 }

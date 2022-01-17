@@ -1,13 +1,16 @@
-import React, {useEffect, useState} from "react";
-import {Container, Form, Section} from "react-bulma-components";
+import React from "react";
+import {Box, Container, Form, Heading, Section} from "react-bulma-components";
 
 function ExcludedLetters(props: {
     excludedLetters: string[];
     onChange: (val: string[]) => void;
 }){
-    return <div>
-        <Section>
-            <Container>
+    return <Section>
+        <Container>
+            <Box>
+                <Heading>
+                    Excluded Letters
+                </Heading>
                 <Form.Field>
                     <Form.Control>
                         <Form.Textarea
@@ -19,9 +22,9 @@ function ExcludedLetters(props: {
                         />
                     </Form.Control>
                 </Form.Field>
-            </Container>
-        </Section>
-    </div>;
+            </Box>
+        </Container>
+    </Section>;
 }
 
 export {ExcludedLetters}

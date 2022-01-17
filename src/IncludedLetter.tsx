@@ -1,23 +1,26 @@
-import React, {useEffect, useState} from "react";
-import {Container, Form, Icon, Section} from "react-bulma-components";
+import React from "react";
+import {Box, Container, Form, Heading, Section} from "react-bulma-components";
 import {IIncludedLetter} from "./Models/Models";
 
 function IncludedLetters(props: {
     includedLetters: IIncludedLetter[],
     onChange: (val: IIncludedLetter[]) => void;
 }) {
-    return <div>
-        <Section>
-            <Container>
+    return <Section>
+        <Container>
+            <Box>
+                <Heading>
+                    Included Letters
+                </Heading>
                 <form>
                     {
-                        props.includedLetters.map((l,i) => {
+                        props.includedLetters.map((l, i) => {
                             return <IncludedLetter
                                 key={i}
                                 includedLetter={l}
                                 onChange={(val) => {
-                                    let ils = props.includedLetters;
-                                    let il = ils[i];
+                                    const ils = props.includedLetters;
+                                    const il = ils[i];
                                     Object.assign(il, val);
                                     props.onChange(ils)
                                 }}
@@ -25,15 +28,15 @@ function IncludedLetters(props: {
                         })
                     }
                 </form>
-            </Container>
-        </Section>
-    </div>
+            </Box>
+        </Container>
+    </Section>
 }
 
 function IncludedLetter(props: {
     includedLetter: IIncludedLetter;
     onChange: (val: IIncludedLetter) => void;
-}){
+}) {
 
 
     return <><Form.Field>

@@ -15,6 +15,13 @@ then
     # read it
 	while IFS= read line
     do
+      # remove duplicate chars
+      # https://unix.stackexchange.com/questions/419464/remove-duplicate-characters-in-bash
+      line=$(printf '%s\n' "$line" | awk -v FS="" '{
+           for(i=1; i<=NF; i++)
+               if ($i==" " || !a[$i]++) printf "%s", $i; print ""
+       }')
+
       # 5 letters and alpha only
       if [[ ${#line} -eq 5 && $line =~ ^[[:alnum:]]+$  ]]
       then
