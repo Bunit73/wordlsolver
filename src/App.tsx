@@ -42,6 +42,7 @@ function App() {
     let [filteredWords, setFilteredWords] = useState<string[]>([])
     let [excludedLetters, setExcludedLetters] = useState<string[]>([])
     let [includedLetters, setIncludedLetters] = useState<IIncludedLetter[]>(initIncludeLetters)
+    let [filter, setFilter] = useState('')
 
 
     useEffect(() => {
@@ -56,17 +57,24 @@ function App() {
         })
     }, [])
 
-    const WordFilter = (words: string[], excludedLetters: string[], includedLetters: IIncludedLetter[]): string[] => {
+    const WordFilter = (words: string[], excludedLetters: string[], includedLetters: IIncludedLetter[], filter?: string): string[] => {
         let nwl: string[] = [];
         let excluded = true;
         let found = false;
+        let hasSubStr = false;
 
         for (const w of words) {
 
             excluded = WordExcludesLetters(w, excludedLetters);
             found = WordContainsLetters(w, includedLetters)
 
-            if (excluded && found) {
+            if (filter && filter.length > 0) {
+                hasSubStr = w.includes(filter)
+            } else {
+                hasSubStr = true;
+            }
+
+            if (excluded && found && hasSubStr) {
                 nwl.push(w)
             }
         }
@@ -130,6 +138,10 @@ function App() {
                         <Columns.Column>
                             <PossibleWords
                                 words={filteredWords}
+                                filterChange={(val) => {
+                                    setFilter(val)
+                                    setFilteredWords(WordFilter(words, excludedLetters, includedLetters, val))
+                                }}
                             />
                         </Columns.Column>
                         <Columns.Column>
@@ -137,14 +149,14 @@ function App() {
                                 includedLetters={includedLetters}
                                 onChange={(val) => {
                                     setIncludedLetters(val)
-                                    setFilteredWords(WordFilter(words, excludedLetters, val))
+                                    setFilteredWords(WordFilter(words, excludedLetters, val, filter))
                                 }}/>
                             <ExcludedLetters
                                 excludedLetters={excludedLetters}
                                 onChange={(val) => {
                                     const eL = Array.from(new Set(val));
                                     setExcludedLetters(eL)
-                                    setFilteredWords(WordFilter(words, eL, includedLetters))
+                                    setFilteredWords(WordFilter(words, eL, includedLetters, filter))
                                 }}
                             />
                         </Columns.Column>
