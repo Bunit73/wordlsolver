@@ -55,6 +55,7 @@ function App() {
             setWords(wl)
             setFilteredWords(WordFilter(wl, excludedLetters, includedLetters))
         })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const WordFilter = (words: string[], excludedLetters: string[], includedLetters: IIncludedLetter[], filter?: string): string[] => {
