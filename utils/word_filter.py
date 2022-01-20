@@ -12,7 +12,7 @@ def word_has_dup_char(word):
 for w in words:
     w = w.strip().lower()
 
-    if len(w) == 5 and not word_has_dup_char(w) and w.isalpha():
+    if len(w) == 5 and w.isalpha():
         print(w, file=filtered_words_file)
     else:
         continue
