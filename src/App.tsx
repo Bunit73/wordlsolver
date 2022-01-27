@@ -6,8 +6,7 @@ import {PossibleWords} from './PossibleWords';
 import {IIncludedLetter} from "./Models/Models";
 import {ExcludedLetters} from "./ExcludedLetters";
 import {IncludedLetters} from "./IncludedLetter";
-// @ts-ignore
-import raw from "./filtered_words.txt";
+import Words from "./Words.json";
 
 function App() {
     const initIncludeLetters = [
@@ -46,16 +45,10 @@ function App() {
 
 
     useEffect(() => {
-        let wl: string[] = [];
-        fetch(raw)
-            .then(r => r.text())
-            .then(text => {
-                wl = text.split(/\n/)
-            }).finally(() => {
-            setWords(wl)
-            setFilteredWords(WordFilter(wl, excludedLetters, includedLetters))
-        })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        let wl: string[] = Words.wordList;
+        setWords(wl);
+        setFilteredWords(WordFilter(wl, excludedLetters, includedLetters))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const WordFilter = (words: string[], excludedLetters: string[], includedLetters: IIncludedLetter[], filter?: string): string[] => {
