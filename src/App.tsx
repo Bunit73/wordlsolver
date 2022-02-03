@@ -45,7 +45,7 @@ function App() {
 
 
     useEffect(() => {
-        let wl: string[] = Words.wordList;
+        let wl: string[] = Words.wordList.sort();
         setWords(wl);
         setFilteredWords(WordFilter(wl, excludedLetters, includedLetters))
         // eslint-disable-next-line react-hooks/exhaustive-deps
