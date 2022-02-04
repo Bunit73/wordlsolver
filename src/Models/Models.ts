@@ -1,7 +1,7 @@
-interface IIncludedLetter {
-    letter: string,
+interface IIncludedLetters {
+    letters: string,
     correctPos: boolean,
     pos: number
 }
 
-export type {IIncludedLetter}
+export type {IIncludedLetters}

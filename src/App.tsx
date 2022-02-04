@@ -3,7 +3,7 @@ import 'bulma/css/bulma.min.css';
 import './App.css';
 import {Columns, Container, Heading, Section} from "react-bulma-components";
 import {PossibleWords} from './PossibleWords';
-import {IIncludedLetter} from "./Models/Models";
+import {IIncludedLetters} from "./Models/Models";
 import {ExcludedLetters} from "./ExcludedLetters";
 import {IncludedLetters} from "./IncludedLetter";
 import Words from "./Words.json";
@@ -11,27 +11,27 @@ import Words from "./Words.json";
 function App() {
     const initIncludeLetters = [
         {
-            letter: '',
+            letters: '',
             correctPos: false,
             pos: 0
         },
         {
-            letter: '',
+            letters: '',
             correctPos: false,
             pos: 1
         },
         {
-            letter: '',
+            letters: '',
             correctPos: false,
             pos: 2
         },
         {
-            letter: '',
+            letters: '',
             correctPos: false,
             pos: 3
         },
         {
-            letter: '',
+            letters: '',
             correctPos: false,
             pos: 4
         }
@@ -40,7 +40,7 @@ function App() {
     let [words, setWords] = useState<string[]>([])
     let [filteredWords, setFilteredWords] = useState<string[]>([])
     let [excludedLetters, setExcludedLetters] = useState<string[]>([])
-    let [includedLetters, setIncludedLetters] = useState<IIncludedLetter[]>(initIncludeLetters)
+    let [includedLetters, setIncludedLetters] = useState<IIncludedLetters[]>(initIncludeLetters)
     let [filter, setFilter] = useState('')
 
 
@@ -51,7 +51,7 @@ function App() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const WordFilter = (words: string[], excludedLetters: string[], includedLetters: IIncludedLetter[], filter?: string): string[] => {
+    const WordFilter = (words: string[], excludedLetters: string[], includedLetters: IIncludedLetters[], filter?: string): string[] => {
         let nwl: string[] = [];
         let excluded = true;
         let found = false;
@@ -75,33 +75,34 @@ function App() {
         return nwl;
     }
 
-    const WordContainsLetters = (word: string, letters: IIncludedLetter[]): boolean => {
-        const lList = letters.filter(x => x.letter.length > 0)
-        let retval = false;
-        let hasLetter = false;
+    const WordContainsLetters = (word: string, letters: IIncludedLetters[]): boolean => {
+
+        const lList = letters.filter(x => x.letters.length > 0);
+        const posKnownList = letters.filter(x => x.correctPos);
+        const posKnownIncorrectList = letters.filter(x => !x.correctPos);
+
+        // no included letters
         if (lList.length === 0) {
             return true;
-        } else {
-            for (const l of lList) {
-                hasLetter = word.includes(l.letter);
-                // doesnt include letter
-                if (!hasLetter) {
+        }
+
+        // filter out known letter positions
+        for (const l of posKnownList) {
+            if (word[l.pos] !== l.letters[0]) {
+                return false;
+            }
+        }
+
+        // filter out known letters bad positions
+        for (const il of posKnownIncorrectList) {
+            for (const l of il.letters) {
+                if (word[il.pos] === l) {
                     return false;
-                }
-                // position is incorrect
-                else if (!l.correctPos && word[l.pos] === l.letter) {
-                    return false;
-                }
-                // position is correct
-                else if (l.correctPos && word[l.pos] !== l.letter) {
-                    return false;
-                } else {
-                    retval = true;
                 }
             }
-
-            return retval;
         }
+
+        return true;
     }
 
     const WordExcludesLetters = (word: string, letters: string[]): boolean => {
