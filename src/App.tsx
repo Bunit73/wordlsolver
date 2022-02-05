@@ -7,6 +7,8 @@ import {IIncludedLetters} from "./Models/Models";
 import {ExcludedLetters} from "./ExcludedLetters";
 import {IncludedLetters} from "./IncludedLetter";
 import Words from "./Words.json";
+import {WarningAlert} from "./WarningAlert";
+import {Helpers} from "./Helpers";
 
 function App() {
     const initIncludeLetters = [
@@ -119,6 +121,17 @@ function App() {
         }
     }
 
+    const LetterInBothListWarning = (includedLetters: string, excludedLetters: string): boolean => {
+
+        for (const l of includedLetters) {
+            if (excludedLetters.includes(l)) {
+                return true
+            }
+        }
+
+        return false;
+    }
+
 
     return (
         <div className="App">
@@ -127,6 +140,10 @@ function App() {
                     Solver for Wordle
                 </Heading>
             </Section>
+            {
+                LetterInBothListWarning(Helpers.AllIncludedLetters(includedLetters), excludedLetters.join('')) &&
+                <WarningAlert message={"You have the same letter in the included and excluded lists."}/>
+            }
             <Section>
                 <Container>
                     <Columns>
