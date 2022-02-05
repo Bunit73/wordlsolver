@@ -1,11 +1,7 @@
 import React from "react";
 import {Box, Container, Form, Heading, Section} from "react-bulma-components";
 import {IIncludedLetters} from "./Models/Models";
-
-const unrepeated = (str: string): string => {
-    return Array.from(new Set(str)).join('')
-};
-
+import {Helpers} from "./Helpers";
 
 function IncludedLetters(props: {
     includedLetters: IIncludedLetters[],
@@ -53,9 +49,9 @@ function IncludedLetter(props: {
                     value={props.includedLetter.letters}
                     placeholder={props.placeHolderText}
                     onChange={(e) => {
-                        const val = e.target.value.replaceAll(' ', '').toLowerCase();
+                        const val = e.target.value.replaceAll(' ', '');
                         const il = props.includedLetter;
-                        il.letters = unrepeated(val);
+                        il.letters = Helpers.Unrepeated(val);
                         props.onChange(il);
                     }}
                 />
