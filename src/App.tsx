@@ -95,6 +95,15 @@ function App() {
             }
         }
 
+        // filter out words that dont contain the letter at all
+        for (const il of posKnownIncorrectList) {
+            for (const l of il.letters) {
+                if (!word.includes(l)) {
+                    return false;
+                }
+            }
+        }
+
         // filter out known letters bad positions
         for (const il of posKnownIncorrectList) {
             for (const l of il.letters) {
