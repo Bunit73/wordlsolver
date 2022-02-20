@@ -10,6 +10,95 @@ import Words from "./Words.json";
 import {WarningAlert} from "./WarningAlert";
 import {Helpers} from "./Helpers";
 
+const WordFilter = (words: string[], excludedLetters: string[], includedLetters: IIncludedLetters[], filter?: string): string[] => {
+    let nwl: string[] = [];
+    let excluded = true;
+    let found = false;
+    let hasSubStr = false;
+
+    for (const w of words) {
+
+        excluded = WordExcludesLetters(w, excludedLetters);
+        found = WordContainsLetters(w, includedLetters)
+
+        if (filter && filter.length > 0) {
+            hasSubStr = w.includes(filter)
+        } else {
+            hasSubStr = true;
+        }
+
+        if (excluded && found && hasSubStr) {
+            nwl.push(w)
+        }
+    }
+    return nwl;
+}
+
+const WordContainsLetters = (word: string, letters: IIncludedLetters[]): boolean => {
+
+    const lList = letters.filter(x => x.letters.length > 0);
+    const posKnownList = letters.filter(x => x.correctPos);
+    const posKnownIncorrectList = letters.filter(x => !x.correctPos);
+
+    // no included letters
+    if (lList.length === 0) {
+        return true;
+    }
+
+    // filter out known letter positions
+    for (const l of posKnownList) {
+        if (word[l.pos] !== l.letters[0]) {
+            return false;
+        }
+    }
+
+    // filter out words that dont contain the letter at all
+    for (const il of posKnownIncorrectList) {
+        for (const l of il.letters) {
+            if (!word.includes(l)) {
+                return false;
+            }
+        }
+    }
+
+    // filter out known letters bad positions
+    for (const il of posKnownIncorrectList) {
+        for (const l of il.letters) {
+            if (word[il.pos] === l) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+const WordExcludesLetters = (word: string, letters: string[]): boolean => {
+    if (letters.length === 0) {
+        return true;
+    } else {
+        for (const e of letters) {
+            if (word.includes(e)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+
+const LetterInBothListWarning = (includedLetters: string, excludedLetters: string): boolean => {
+
+    for (const l of includedLetters) {
+        if (excludedLetters.includes(l)) {
+            return true
+        }
+    }
+
+    return false;
+}
+
+
 function App() {
     const initIncludeLetters = [
         {
@@ -52,86 +141,6 @@ function App() {
         setFilteredWords(WordFilter(wl, excludedLetters, includedLetters))
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
-    const WordFilter = (words: string[], excludedLetters: string[], includedLetters: IIncludedLetters[], filter?: string): string[] => {
-        let nwl: string[] = [];
-        let excluded = true;
-        let found = false;
-        let hasSubStr = false;
-
-        for (const w of words) {
-
-            excluded = WordExcludesLetters(w, excludedLetters);
-            found = WordContainsLetters(w, includedLetters)
-
-            if (filter && filter.length > 0) {
-                hasSubStr = w.includes(filter)
-            } else {
-                hasSubStr = true;
-            }
-
-            if (excluded && found && hasSubStr) {
-                nwl.push(w)
-            }
-        }
-        return nwl;
-    }
-
-    const WordContainsLetters = (word: string, letters: IIncludedLetters[]): boolean => {
-
-        const lList = letters.filter(x => x.letters.length > 0);
-        const posKnownList = letters.filter(x => x.correctPos);
-        const posKnownIncorrectList = letters.filter(x => !x.correctPos);
-
-        // no included letters
-        if (lList.length === 0) {
-            return true;
-        }
-
-        // filter out known letter positions
-        for (const l of posKnownList) {
-            if (word[l.pos] !== l.letters[0]) {
-                return false;
-            }
-        }
-
-        // filter out known letters bad positions
-        for (const il of posKnownIncorrectList) {
-            for (const l of il.letters) {
-                if (word[il.pos] === l) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    const WordExcludesLetters = (word: string, letters: string[]): boolean => {
-        if (letters.length === 0) {
-            return true;
-        } else {
-            for (const e of letters) {
-                if (word.includes(e)) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-    }
-
-    const LetterInBothListWarning = (includedLetters: string, excludedLetters: string): boolean => {
-
-        for (const l of includedLetters) {
-            if (excludedLetters.includes(l)) {
-                return true
-            }
-        }
-
-        return false;
-    }
-
 
     return (
         <div className="App">
@@ -179,4 +188,4 @@ function App() {
     );
 }
 
-export default App;
+export {App, LetterInBothListWarning, WordExcludesLetters};
