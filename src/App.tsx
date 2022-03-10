@@ -188,4 +188,4 @@ function App() {
     );
 }
 
-export {App, LetterInBothListWarning, WordExcludesLetters};
+export {App, LetterInBothListWarning, WordExcludesLetters, WordContainsLetters, WordFilter};

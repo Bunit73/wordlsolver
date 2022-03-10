@@ -1,7 +1,7 @@
 // https://www.newline.co/@bespoyasov/how-to-write-your-first-unit-test-in-react-typescript-app--ca51d0c0
 import React from 'react';
 import {render, screen} from '@testing-library/react';
-import {App, LetterInBothListWarning, WordExcludesLetters} from './App';
+import {App, LetterInBothListWarning, WordContainsLetters, WordExcludesLetters, WordFilter} from './App';
 
 test('renders page title', () => {
     render(<App/>);
@@ -52,7 +52,6 @@ describe('letters in both list function', () => {
     })
 })
 
-
 describe('word excludes letters function', () => {
     test('when given no word', () => {
         const [a, b, expected] = ['', [], true];
@@ -74,6 +73,112 @@ describe('word excludes letters function', () => {
         const [a, b, expected] = ['skier', ['a', 'b', 'c'], true];
 
         const result = WordExcludesLetters(a, b);
+
+        expect(result).toEqual(expected);
+    })
+})
+
+describe('word includes letters function', () => {
+    test('when given no word', () => {
+        const [a, b, expected] = ['', [], true];
+
+        const result = WordContainsLetters(a, b);
+
+        expect(result).toEqual(expected);
+    })
+
+    test('word doesnt contain letter', () => {
+        const [a, b, expected] = ['abcde', [{
+            letters: 'z',
+            correctPos: true,
+            pos: 1
+        }], false];
+
+        const result = WordContainsLetters(a, b);
+
+        expect(result).toEqual(expected);
+    })
+
+    test('word doesnt contain letter at all', () => {
+        const [a, b, expected] = ['abcde', [{
+            letters: 'z',
+            correctPos: false,
+            pos: 1
+        }], false];
+
+        const result = WordContainsLetters(a, b);
+
+        expect(result).toEqual(expected);
+    })
+
+    test('filter out known letters at bad postions', () => {
+        const [a, b, expected] = ['abcde', [{
+            letters: 'fgh',
+            correctPos: false,
+            pos: 1
+        }], false];
+
+        const result = WordContainsLetters(a, b);
+
+        expect(result).toEqual(expected);
+    })
+
+    test('word contains letter wrong position', () => {
+        const [a, b, expected] = ['abcde', [{
+            letters: 'e',
+            correctPos: false,
+            pos: 1
+        }], true];
+
+
+        const result = WordContainsLetters(a, b);
+
+        expect(result).toEqual(expected);
+    })
+
+    test('word contains letter correct position', () => {
+        const [a, b, expected] = ['abcde', [{
+            letters: 'a',
+            correctPos: true,
+            pos: 0
+        }], true];
+
+
+        const result = WordContainsLetters(a, b);
+
+        expect(result).toEqual(expected);
+    })
+})
+
+describe('word filter', () => {
+    test('no words or filters', () => {
+        const [a, b, c, expected] = [[], [], [], []];
+
+        const result = WordFilter(a, b, c);
+
+        expect(result).toEqual(expected);
+    })
+
+    test('no words with filter', () => {
+        const [a, b, c, d, expected] = [[], [], [], 'dog', []];
+
+        const result = WordFilter(a, b, c, d);
+
+        expect(result).toEqual(expected);
+    })
+
+    test('words with no include or excluded words and filter off', () => {
+        const [a, b, c, expected] = [['cat', 'dog'], [], [], ['cat', 'dog']];
+
+        const result = WordFilter(a, b, c);
+
+        expect(result).toEqual(expected);
+    })
+
+    test('words with no include or excluded words and filter on', () => {
+        const [a, b, c, d, expected] = [['cat', 'dog'], [], [], 'd', ['dog']];
+
+        const result = WordFilter(a, b, c, d);
 
         expect(result).toEqual(expected);
     })
